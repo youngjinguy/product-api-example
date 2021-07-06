@@ -1,6 +1,8 @@
 package com.youngjinguy.product.entity
 
 import com.youngjinguy.product.model.OptionCreateRequest
+import com.youngjinguy.product.model.OptionUpdateRequest
+import org.hibernate.annotations.DynamicUpdate
 import java.math.BigDecimal
 import javax.persistence.*
 
@@ -10,7 +12,8 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "pd_option2")
-class Option(
+@DynamicUpdate
+data class Option(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val no: Long = 0,
@@ -31,6 +34,12 @@ class Option(
 
     fun setProduct(product: Product) {
         this.product = product
+    }
+
+    fun update(request: OptionUpdateRequest) {
+        request.name?.let { this.copy(name = it) }
+        request.price?.let { this.copy(price = it) }
+        request.representative?.let { this.copy(representative = representative) }
     }
 
     companion object {

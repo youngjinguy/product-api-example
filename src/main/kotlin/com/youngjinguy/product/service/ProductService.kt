@@ -4,8 +4,10 @@ import com.youngjinguy.product.entity.Option
 import com.youngjinguy.product.entity.Product
 import com.youngjinguy.product.entity.ProductCategoryRelation
 import com.youngjinguy.product.model.ProductCreateRequest
+import com.youngjinguy.product.model.ProductUpdateRequest
 import com.youngjinguy.product.repository.ProductCategoryRelationRepository
 import com.youngjinguy.product.repository.ProductRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,7 +27,24 @@ class ProductService(
         return productNo
     }
 
-    fun update() {
+    @Transactional
+    fun update(productNo: Long, request: ProductUpdateRequest): Long {
+        updateProduct(productNo = productNo, request = request)
+        updateProductCategoryRelation(productNo = productNo, categoryNos = request.categoryNos)
+        return productNo
+    }
+
+    private fun updateProduct(productNo: Long, request: ProductUpdateRequest) {
+        val product = productRepository.findByIdOrNull(productNo)
+        product?.update(request)
+    }
+
+    private fun updateProductCategoryRelation(productNo: Long, categoryNos: Set<Long>) {
+        if (categoryNos.isNotEmpty()) {
+            val productCategoryRelation = productCategoryRelationRepository.findByProductNo(productNo)
+            productCategoryRelationRepository.deleteAll(productCategoryRelation)
+            addProductCategoryRelation(productNo = productNo, categoryNos = categoryNos)
+        }
     }
 
     fun delete() {

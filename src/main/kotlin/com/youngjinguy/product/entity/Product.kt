@@ -2,6 +2,8 @@ package com.youngjinguy.product.entity
 
 import com.youngjinguy.product.enums.SaleStatus
 import com.youngjinguy.product.model.ProductCreateRequest
+import com.youngjinguy.product.model.ProductUpdateRequest
+import org.hibernate.annotations.DynamicUpdate
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -12,7 +14,8 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "pd_product2")
-class Product(
+@DynamicUpdate
+data class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val no: Long = 0,
@@ -36,6 +39,22 @@ class Product(
 
     fun setOptions(options: List<Option>) {
         options.forEach { this.addOption(it) }
+    }
+
+    fun update(request: ProductUpdateRequest) {
+        request.name?.let { this.copy(name = it) }
+        request.adminNo?.let { this.copy(adminNo = it) }
+        request.price?.let { this.copy(price = it) }
+        request.saleStartYmdt?.let { this.copy(saleStartYmdt = it) }
+        request.saleEndYmdt?.let { this.copy(saleEndYmdt = it) }
+        request.representCategoryNo?.let { this.copy(representCategoryNo = it) }
+        val options = request.options
+        if (options.isNotEmpty()) {
+            options.forEach { request ->
+                val option = this.options.first { it.no == request.no }
+                option.update(request)
+            }
+        }
     }
 
     companion object {

@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository
  * @since 2021-07-06
  */
 interface ProductCategoryRelationRepository : JpaRepository<ProductCategoryRelation, Long> {
-
+    fun findByProductNo(productNo: Long): List<ProductCategoryRelation>
 }
