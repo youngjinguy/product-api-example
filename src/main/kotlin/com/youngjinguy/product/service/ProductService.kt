@@ -47,11 +47,11 @@ class ProductService(
         }
     }
 
-    fun delete() {
+    fun delete(productNo: Long) {
+        val product = productRepository.findByIdOrNull(productNo)
+        product?.delete()
     }
 
-    //    fun findById(productNo: Long): Product {
-    //    }
     //
     //    fun findByAll(): List<Product> {
     //    }

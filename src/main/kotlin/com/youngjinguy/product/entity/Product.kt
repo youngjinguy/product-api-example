@@ -29,9 +29,11 @@ data class Product(
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
     val options: MutableList<Option> = mutableListOf(),
     val representCategoryNo: Long,
-    val deleted: Boolean,
     val registerYmdt: LocalDateTime
 ) {
+    var deleted: Boolean = false
+        private set
+
     private fun addOption(option: Option) {
         this.options.add(option)
         option.setProduct(this)
@@ -57,6 +59,10 @@ data class Product(
         }
     }
 
+    fun delete() {
+        this.deleted = true
+    }
+
     companion object {
         fun createBy(request: ProductCreateRequest): Product {
             return Product(
@@ -67,7 +73,6 @@ data class Product(
                 saleEndYmdt = request.saleEndYmdt,
                 saleStatus = SaleStatus.NORMAL,
                 representCategoryNo = request.representCategoryNo,
-                deleted = false,
                 registerYmdt = LocalDateTime.now()
             )
         }
