@@ -25,6 +25,7 @@ data class Product(
     val price: BigDecimal = BigDecimal.ZERO,
     val saleStartYmdt: LocalDateTime = LocalDateTime.now(),
     val saleEndYmdt: LocalDateTime,
+    @Enumerated(EnumType.STRING)
     val saleStatus: SaleStatus,
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
     val options: MutableList<Option> = mutableListOf(),

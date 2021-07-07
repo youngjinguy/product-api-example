@@ -1,12 +1,16 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val querydslVersion = "4.3.1"
+
 plugins {
+    val kotlinVersion = "1.5.20"
     id("org.springframework.boot") version "2.5.2"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.5.20"
-    kotlin("plugin.spring") version "1.5.20"
-    kotlin("plugin.jpa") version "1.5.20"
-    kotlin("plugin.allopen") version "1.5.20"
+    kotlin("jvm") version kotlinVersion
+    kotlin("kapt") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+    kotlin("plugin.jpa") version kotlinVersion
+    kotlin("plugin.allopen") version kotlinVersion
 }
 
 group = "com.youngjinguy"
@@ -25,6 +29,7 @@ repositories {
 
 apply(plugin = "org.jetbrains.kotlin.plugin.allopen")
 apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
+apply(plugin = "org.jetbrains.kotlin.kapt")
 
 
 dependencies {
@@ -40,6 +45,12 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
+
+    // QueryDSL
+    implementation("com.querydsl:querydsl-jpa:${querydslVersion}")
+    implementation("com.querydsl:querydsl-sql:${querydslVersion}")
+    implementation("com.querydsl:querydsl-apt:${querydslVersion}")
+    kapt("com.querydsl:querydsl-apt:${querydslVersion}:jpa")
 }
 
 tasks.withType<KotlinCompile> {

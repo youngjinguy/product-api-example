@@ -2,7 +2,6 @@ package com.youngjinguy.product.entity
 
 import com.youngjinguy.product.model.OptionCreateRequest
 import com.youngjinguy.product.model.OptionUpdateRequest
-import org.hibernate.annotations.DynamicUpdate
 import java.math.BigDecimal
 import javax.persistence.*
 
@@ -12,7 +11,6 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "pd_option2")
-@DynamicUpdate
 data class Option(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +21,7 @@ data class Option(
     val representative: Boolean
 ) {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productNo", insertable = false, updatable = false)
+    @JoinColumn(name = "productNo", insertable = true, updatable = false)
     var product: Product? = null
         private set
 

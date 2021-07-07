@@ -1,0 +1,61 @@
+### 상품생성
+POST http://localhost:8080/products
+Accept: application/json
+Version: 1.0
+Content-Type: application/json
+
+{
+  "name": "test",
+  "adminNo": 1,
+  "price": 10000,
+  "saleStartYmdt": "2021-06-01T00:00:00",
+  "saleEndYmdt": "2021-07-01T00:00:00",
+  "options": [
+    {
+      "name": "option1",
+      "price": "1000",
+      "representative": true
+    },
+    {
+      "name": "option2",
+      "price": "2000",
+      "representative": false
+    }
+  ],
+  "representCategoryNo": 1,
+  "categoryNos": [
+    1,
+    2,
+    3
+  ]
+}
+
+> {% client.test("status", function() {
+    client.log(JSON.stringify(response.body));
+    client.assert(response.status === 200, "OK");
+});
+%}
+
+### 상품조회
+GET http://localhost:8080/products?categoryNo=1&saleStatusSearchType=DELETE
+Accept: application/json
+Version: 1.0
+Content-Type: application/json
+
+> {% client.test("status", function() {
+    client.log(JSON.stringify(response.body));
+    client.assert(response.status === 200, "OK");
+});
+%}
+
+### 상품삭제
+DELETE http://localhost:8080/products/1
+Accept: application/json
+Version: 1.0
+Content-Type: application/json
+
+> {% client.test("status", function() {
+    client.log(JSON.stringify(response.body));
+    client.assert(response.status === 200, "OK");
+});
+%}

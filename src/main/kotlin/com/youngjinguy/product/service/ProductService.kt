@@ -4,8 +4,11 @@ import com.youngjinguy.product.entity.Option
 import com.youngjinguy.product.entity.Product
 import com.youngjinguy.product.entity.ProductCategoryRelation
 import com.youngjinguy.product.model.ProductCreateRequest
+import com.youngjinguy.product.model.ProductSearchRequest
+import com.youngjinguy.product.model.ProductSearchResponse
 import com.youngjinguy.product.model.ProductUpdateRequest
 import com.youngjinguy.product.repository.ProductCategoryRelationRepository
+import com.youngjinguy.product.repository.ProductCustomRepository
 import com.youngjinguy.product.repository.ProductRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -18,7 +21,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
-    private val productCategoryRelationRepository: ProductCategoryRelationRepository
+    private val productCategoryRelationRepository: ProductCategoryRelationRepository,
+    private val productCustomRepository: ProductCustomRepository
 ) {
     @Transactional
     fun create(request: ProductCreateRequest): Long {
@@ -47,6 +51,7 @@ class ProductService(
         }
     }
 
+    @Transactional
     fun delete(productNo: Long) {
         val product = productRepository.findByIdOrNull(productNo)
         product?.delete()
@@ -74,5 +79,15 @@ class ProductService(
             )
         }
         productCategoryRelationRepository.saveAll(productCategoryRelations)
+    }
+
+    @Transactional(readOnly = true)
+    fun search(request: ProductSearchRequest): ProductSearchResponse {
+        val searchProducts = productCustomRepository.searchProducts(request)
+        val count = productCustomRepository.searchProductsCount(request)
+        return ProductSearchResponse(
+            contents = searchProducts,
+            totalCount = count
+        )
     }
 }
